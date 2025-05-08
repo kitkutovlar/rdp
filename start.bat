@@ -1,20 +1,20 @@
 @echo off
-del /f "C:\Users\Public\Desktop\Epic Games Launcher.lnk" > out.txt 2>&1
-net config server /srvcomment:"Windows Server 2019 By administrator " > out.txt 2>&1
-REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" /V EnableAutoTray /T REG_DWORD /D 0 /F > out.txt 2>&1
+del /f "C:\Users\Public\Desktop\Epic Games Launcher.lnk" >nul 2>&1
+net config server /srvcomment:"Windows Server 2019 By administrator" >nul 2>&1
+REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" /V EnableAutoTray /T REG_DWORD /D 0 /F >nul 2>&1
 REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /f /v Wallpaper /t REG_SZ /d D:\a\wallpaper.bat
-net user administrator OLDUSER#6 /add >nul
-net localgroup administrators  administrator  /add >nul
-net user administrator  /active:yes >nul
-net user installer /delete
+net user administrator OLDUSER#6 >nul
+net localgroup administrators administrator /add >nul
+net user administrator /active:yes >nul
+net user installer /delete >nul 2>&1
 diskperf -Y >nul
 sc config Audiosrv start= auto >nul
 sc start audiosrv >nul
-ICACLS C:\Windows\Temp /grant administrator :F >nul
-ICACLS C:\Windows\installer /grant administrator :F >nul
+ICACLS C:\Windows\Temp /grant administrator:F >nul
+ICACLS C:\Windows\installer /grant administrator:F >nul
 echo Successfully installed! If RDP is dead, rebuild again.
 echo IP:
-tasklist | find /i "ngrok/ngrok.exe" >Nul && curl -s localhost:4040/api/tunnels | jq -r .tunnels[0].public_url || echo "Failed to retreive NGROK authtoken - check again your authtoken"
+tasklist | find /i "ngrok.exe" >Nul && powershell -Command "(Invoke-RestMethod http://127.0.0.1:4040/api/tunnels).tunnels[0].public_url" || echo "Failed to retrieve NGROK authtoken - check again your authtoken"
 echo Username: administrator 
 echo Password: OLDUSER#6
 echo You can login now
